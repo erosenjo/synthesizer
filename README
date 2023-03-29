@@ -1,3 +1,11 @@
 Ryan Beatty, Ben Snyder, Joshua Bowen, Emerson Rosen-Jones
 
 A project to create a CLI/TUI oscillator-based synth.
+
+
+some thoughts from Ryan on structure: 
+- currently, I'm thinking this project will likely be based on Aquila, libsnd, or some other similar audio DSP library. we may also want to look into libsoundio for its modularity with different sound devices
+- main function would probably be the text shell (or UI when implemented), allowing for the user to:
+    - create a new wave generator
+    - start and stop playback on the created generator
+    - adjust signal processing effects (e.g. change frequency, amplitude, EQ, etc)
