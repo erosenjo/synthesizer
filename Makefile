@@ -21,6 +21,7 @@ generator.o: $(aquilapath)/source/generator/Generator.cpp
 plot.o: $(aquilapath)/tools/TextPlot.cpp
 	g++ $(cflags) $(aquilapath)/tools/TextPlot.cpp -c -o plot.o
 
+# don't know if this works
 rtaudio.o: $(rtaudiopath)/RtAudio.cpp
 	g++ $(cflags) -c -o $@ $^
 
