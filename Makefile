@@ -1,7 +1,7 @@
 cflags = -g -pedantic -Wall -Wextra -std=c++11
 targets = wavegen sine.o generator.o plot.o tui
 aquilapath = aquila-src/aquila
-rtaudiopath = rtaudio-src/
+rtaudiopath = rtaudio-src
 generatorpath = $(aquilapath)/source/generator
 
 all: $(targets)
