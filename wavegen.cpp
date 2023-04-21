@@ -5,7 +5,7 @@
  *
  */
 
-#include "synthesizer.h"
+#include "aquila-src/aquila/aquila.h" // contains all necessary aquila includes
 #include "rtaudio-src/RtAudio.h"
 #include <cstdio>
 #include <iostream>
@@ -42,7 +42,7 @@ int main(void){
     //for (int i = 0; i < 64; i++) printf("%f\n",array[i]);
 
     //copied from https://www.music.mcgill.ca/~gary/rtaudio/playback.html
-      RtAudio dac;
+  RtAudio dac;
   if ( dac.getDeviceCount() < 1 ) {
     std::cout << "\nNo audio devices found!\n";
     exit( 0 );
