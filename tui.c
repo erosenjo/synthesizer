@@ -9,7 +9,7 @@
 #define DIST_FROM_TOP_TO_TITLE 3
 #define DIST_FROM_TITLE_TO_MENU 3
 #define DIST_FROM_MENU_TO_BOTTOM 2
-#define DIST_FROM_MENU_TO_SIDES 5
+#define DIST_FROM_MENU_TO_SIDES 3
 
 int main() {
 
@@ -22,7 +22,7 @@ int main() {
 	/* INITIALIZATION */
 	initscr(); //start curses mode
 	cbreak(); //disables having to use enter to send input to the program, but retains ability to C-c it, etc.
-		  //replace with raw() to manually control use of terminal signal commands, like C-c, etc.
+	//replace with raw() to manually control use of terminal signal commands, like C-c, etc.
 	noecho(); //prevents input being echoed to the screen
 	keypad(stdscr, TRUE); //enables the use of the arrow keys 
 			      //to interact with the stdscr (the one we are using)
@@ -32,7 +32,7 @@ int main() {
 
 	getmaxyx(stdscr,row,col); //get size of window
 
-	mvprintw(DIST_FROM_TOP_TO_TITLE,(col-strlen(msg))/2,msg); //move printing cursor to (y,x) and print
+	mvprintw(DIST_FROM_TOP_TO_TITLE,(col-strlen(msg))/2 -3,msg); //move printing cursor to (y,x) and print
 	refresh(); //prints the buffer to the screen
 	
 	//making a menu
@@ -40,11 +40,19 @@ int main() {
     int menux = col - (DIST_FROM_MENU_TO_SIDES * 2);
     int starty = DIST_FROM_TITLE_TO_MENU + DIST_FROM_TOP_TO_TITLE; //origin y coordinate for menu
     int startx = DIST_FROM_MENU_TO_SIDES; //origin x coordinate for menu
-	WINDOW *menu = newwin(menuy, menux, starty, startx);
+    WINDOW *menu = newwin(menuy, menux / 2, starty, startx);
     wborder(menu, '|', '|', '-', '-', '+', '+', '+', '+');
+    mvwprintw(menu, 1, 1, "Menu");
+    
+    //Making Wave Monitor
+    WINDOW *monitor = newwin(menuy, menux / 2, starty, menux / 2);
+    wborder(monitor, '|', '|', '-', '-', '+', '+', '+', '+');
+    mvwprintw(monitor, 1, 1, "Monitor");
     wrefresh(menu);
+    wrefresh(monitor);
 
-	getch(); //waits for user input
-	endwin(); //end curses mode
-	return 0;
+    getchar();
+    getch();
+    endwin(); //end curses mode
+    return 0;
 }
