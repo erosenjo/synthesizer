@@ -1,5 +1,5 @@
 cflags = -g -pedantic -Wall -Wextra -std=c++11
-targets = wavegen sine.o generator.o plot.o rtaudio.o tui
+targets = wavegen sine.o generator.o plot.o rtaudio.o tui wavedrawtest
 aquilapath = aquila-src/aquila
 rtaudiopath = rtaudio-src
 generatorpath = $(aquilapath)/source/generator
@@ -7,7 +7,7 @@ generatorpath = $(aquilapath)/source/generator
 all: $(targets)
 	
 clean: 
-	rm -f $(targets)
+	rm -rf $(targets) *.dSYM/
 
 wavegen: wavegen.cpp generator.o plot.o sine.o rtaudio.o 
 	g++ $(cflags) -o $@ $^ 
@@ -26,3 +26,6 @@ rtaudio.o: $(rtaudiopath)/RtAudio.cpp
 
 tui: tui.c
 	gcc -Wall -pedantic -Wextra -o $@ $< -lncurses
+
+wavedrawtest: wavedrawtest.cpp generator.o sine.o
+	g++ $(cflags) -o $@ $^ -lncurses
