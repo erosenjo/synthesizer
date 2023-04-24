@@ -8,6 +8,7 @@
 #define Y_OFFSET 10
 #define X_OFFSET 10
 
+// Draws a rectangle defined by given coordinates.
 void drawRect(int y1, int x1, int y2, int x2)
 {
 	y1 += Y_OFFSET;
@@ -34,12 +35,12 @@ void displaySymbol(int y, int x, char *symbol)
 
 int main()
 {
-	int height = 12; // Height of wave window
-	int n_samples = 50;
-	int amplitude = 255;
-	int frequency = 20;
+	int height = 12;	// Height of wave window
+	int n_samples = 50; // Width of wave window
+	double scale_factor = height / ((double)255 * 2);
 
-	double scale_factor = amplitude / ((double)height * 255 * 4);
+	int amplitude = 180;
+	int frequency = 20;
 
 	initscr(); // Initialize ncurses screen
 
@@ -52,11 +53,10 @@ int main()
 	for (int s = 0; s < n_samples; s++)
 	{
 		int scaled_sample = round(sample_array[s] * scale_factor);
-		std::cout << scaled_sample << "\n";
 		displaySymbol(scaled_sample + (height / 2), s, (char *)"*");
 	}
 
-	drawRect(0, 0, height, n_samples + 1);
+	drawRect(-1, -1, height + 1, n_samples);
 
 	getch();
 	endwin();
