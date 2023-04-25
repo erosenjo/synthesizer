@@ -11,8 +11,15 @@ clean:
 
 wavegen: wavegen.cpp generator.o plot.o sine.o rtaudio.o 
 	g++ $(cflags) -o $@ $^ 
-	
+
+# Is there a more efficient way to link all generator files?
 sine.o: generator.o $(generatorpath)/SineGenerator.cpp
+	g++ $(cflags) -c -o $@ $^
+
+square.o: generator.o $(generatorpath)/SquareGenerator.cpp
+	g++ $(cflags) -c -o $@ $^
+
+triangle.o: generator.o $(generatorpath)/TriangleGenerator.cpp
 	g++ $(cflags) -c -o $@ $^
 
 generator.o: $(generatorpath)/Generator.cpp	
@@ -27,5 +34,5 @@ rtaudio.o: $(rtaudiopath)/RtAudio.cpp
 tui: tui.c
 	gcc -Wall -pedantic -Wextra -o $@ $< -lncurses
 
-wavedrawtest: wavedrawtest.cpp generator.o sine.o
+wavedrawtest: wavedrawtest.cpp generator.o sine.o square.o triangle.o
 	g++ $(cflags) -o $@ $^ -lncurses
