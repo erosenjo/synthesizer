@@ -5,8 +5,8 @@
 #include "aquila-src/aquila/aquila.h"
 
 #define PI 3.141592
-#define Y_OFFSET 10
-#define X_OFFSET 10
+#define Y_OFFSET 2
+#define X_OFFSET 2
 
 // Draws a rectangle defined by given coordinates.
 void drawRect(int y1, int x1, int y2, int x2)
@@ -39,8 +39,8 @@ int main()
 	int n_samples = 50; // Width of wave window
 	double scale_factor = height / ((double)255 * 2);
 
-	int amplitude = 180;
-	int frequency = 20;
+	int amplitude = 50;
+	int frequency = 80;
 
 	initscr(); // Initialize ncurses screen
 
@@ -49,7 +49,12 @@ int main()
 		.setAmplitude(amplitude)
 		.generate(n_samples);
 
-	const Aquila::SampleType *sample_array = sinegen.toArray();
+	Aquila::TriangleGenerator trigen(1000);
+	trigen.setFrequency(frequency)
+		.setAmplitude(amplitude)
+		.generate(n_samples);
+
+	const Aquila::SampleType *sample_array = trigen.toArray();
 	for (int s = 0; s < n_samples; s++)
 	{
 		int scaled_sample = round(sample_array[s] * scale_factor);
