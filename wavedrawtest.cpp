@@ -1,4 +1,3 @@
-#include <iostream>
 #include <cmath>
 #include <curses.h>
 
@@ -35,15 +34,22 @@ void displaySymbol(int y, int x, char *symbol)
 
 int main()
 {
+	int amplitude = 255;
+	int frequency = 80;
+
 	int height = 12;	// Height of wave window
 	int n_samples = 50; // Width of wave window
 	double scale_factor = height / ((double)255 * 2);
 
-	int amplitude = 50;
-	int frequency = 80;
+	// Initialize ncurses
+	initscr();	 // Initialize ncurses screen
+	curs_set(0); // Hide cursor
+	timeout(-1); // No timeout for getch()
+	noecho();	 // Suppress keyboard input print
 
-	initscr(); // Initialize ncurses screen
+	drawRect(-1, -1, height + 1, n_samples); // Draw wave window
 
+	// Generate waveform
 	Aquila::SineGenerator sinegen(1000);
 	sinegen.setFrequency(frequency)
 		.setAmplitude(amplitude)
@@ -54,14 +60,82 @@ int main()
 		.setAmplitude(amplitude)
 		.generate(n_samples);
 
-	const Aquila::SampleType *sample_array = trigen.toArray();
+	Aquila::SquareGenerator squaregen(1000);
+	squaregen.setFrequency(frequency)
+		.setAmplitude(amplitude)
+		.generate(n_samples);
+
+	// Get samples
+	const Aquila::SampleType *sample_array = sinegen.toArray();
 	for (int s = 0; s < n_samples; s++)
 	{
 		int scaled_sample = round(sample_array[s] * scale_factor);
 		displaySymbol(scaled_sample + (height / 2), s, (char *)"*");
 	}
 
-	drawRect(-1, -1, height + 1, n_samples);
+	// Get realtime keyboard input
+	char display[10];
+	while (1)
+	{
+		switch (getch())
+		{
+		case 'a':
+			strcpy(display, "C      ");
+			break;
+		case 'w':
+			strcpy(display, "C# / Db");
+			break;
+		case 's':
+			strcpy(display, "D      ");
+			break;
+		case 'e':
+			strcpy(display, "D# / Eb");
+			break;
+		case 'd':
+			strcpy(display, "E      ");
+			break;
+		case 'f':
+			strcpy(display, "F      ");
+			break;
+		case 't':
+			strcpy(display, "F# / Gb");
+			break;
+		case 'g':
+			strcpy(display, "G      ");
+			break;
+		case 'y':
+			strcpy(display, "G# / Ab");
+			break;
+		case 'h':
+			strcpy(display, "A      ");
+			break;
+		case 'u':
+			strcpy(display, "A# / Bb");
+			break;
+		case 'j':
+			strcpy(display, "B      ");
+			break;
+		case 'k':
+			strcpy(display, "C      ");
+			break;
+		case 'o':
+			strcpy(display, "C# / Db");
+			break;
+		case 'l':
+			strcpy(display, "D      ");
+			break;
+		case 'p':
+			strcpy(display, "D# / Eb");
+			break;
+		case ';':
+			strcpy(display, "E      ");
+			break;
+		case '\'':
+			strcpy(display, "F      ");
+			break;
+		}
+		displaySymbol(height + 2, 0, (char *)display);
+	}
 
 	getch();
 	endwin();
