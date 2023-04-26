@@ -232,12 +232,16 @@ namespace Aquila
              * @param other right-hand value iterator
              * @return reference to self
              */
+
+	    /* MAKE COPY ASSIGNMENT OPERATOR IMPLICIT TO COMPLY WITH C++11
+	     * THIS CODE DOES THE SAME THING AS THE IMPLICIT BEHAVIOR, SO CAN BE REMOVED
             iterator& operator=(const iterator& other)
             {
                 m_source = other.m_source;
                 idx = other.idx;
                 return (*this);
             }
+	    */
 
             /**
              * Compares two iterators for equality.
