@@ -42,10 +42,11 @@ int main()
 	double scale_factor = height / ((double)255 * 2);
 
 	// Initialize ncurses
-	initscr();	 // Initialize ncurses screen
-	curs_set(0); // Hide cursor
-	timeout(-1); // No timeout for getch()
-	noecho();	 // Suppress keyboard input print
+	initscr();			  // Initialize ncurses screen
+	curs_set(0);		  // Hide cursor
+	timeout(-1);		  // No timeout for getch()
+	noecho();			  // Suppress keyboard input print
+	keypad(stdscr, TRUE); // Allow for arrow key input
 
 	drawRect(-1, -1, height + 1, n_samples); // Draw wave window
 
@@ -74,11 +75,23 @@ int main()
 	}
 
 	// Get realtime keyboard input
-	char display[10];
+	char display[20];
 	while (1)
 	{
 		switch (getch())
 		{
+		case KEY_UP:
+			strcpy(display, "amp++  ");
+			break;
+		case KEY_DOWN:
+			strcpy(display, "amp--  ");
+			break;
+		case KEY_RIGHT:
+			strcpy(display, "freq++ ");
+			break;
+		case KEY_LEFT:
+			strcpy(display, "freq-- ");
+			break;
 		case 'a':
 			strcpy(display, "C      ");
 			break;
