@@ -13,13 +13,13 @@ wavegen: wavegen.cpp generator.o plot.o sine.o rtaudio.o
 	g++ $(cflags) -o $@ $^ 
 
 # Is there a more efficient way to link all generator files?
-sine.o: generator.o $(generatorpath)/SineGenerator.cpp
+sine.o: $(generatorpath)/SineGenerator.cpp
 	g++ $(cflags) -c -o $@ $^
 
-square.o: generator.o $(generatorpath)/SquareGenerator.cpp
+square.o: $(generatorpath)/SquareGenerator.cpp
 	g++ $(cflags) -c -o $@ $^
 
-triangle.o: generator.o $(generatorpath)/TriangleGenerator.cpp
+triangle.o: $(generatorpath)/TriangleGenerator.cpp
 	g++ $(cflags) -c -o $@ $^
 
 generator.o: $(generatorpath)/Generator.cpp	
