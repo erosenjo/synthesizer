@@ -1,9 +1,0 @@
-hi friends 
-
-i havent yet figured out the particulars of makefiles for C++ but i put together a basic test program and linked the compilation such that it seemingly works?
-
-my computer doesnt make sound currently (lol) so if one of you could test and mess around with this 
-
-g++ -g -pedantic -Wall -Wextra -std=c++11 wavegen.cpp $testpath/source/generator/Generator.cpp $testpath/source/generator/SineGenerator.cpp $testpath/tools/TextPlot.cpp
-
-where $testpath ==  [your path]/synthesizer/aquila-src/aquila
