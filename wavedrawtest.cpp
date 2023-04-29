@@ -9,6 +9,40 @@
 #define WINDOW_Y_OFFSET 2
 #define WINDOW_X_OFFSET 2
 
+/*
+This should be refactored to be put in classes.
+Classes:
+	note: const means readonly, static means same as java
+	"If the constant will be the same every time the function is called, use static const.
+	If the constant is only constant for the lifetime of the function and may change depending on on how/when the function is called, use const."
+
+	SampleGenerator
+		public void .set(int amplitude, int frequency)
+		public void 
+		(should not need .setScale(int scale_factor))
+	TextField(int x1, int y1, int x2, int y2)
+		public static void .clear()
+
+This should be split into multiple files (+ headers):
+1. Wave generation (Aquila)
+2. TUI (ncurses)
+3. Audio output (RtAudio)
+*/
+
+// // Returns a note's frequency given semitones from A4 = 440Hz.
+// double toFreq(int semitones) {
+//     return 440 * pow(2, semitones / (double)12);
+// }
+
+// double addSemitones(double frequency, int semitones) {
+//     return frequency * pow(2, semitones / double(12));
+// }
+
+// int main() {
+//     double j = toFreq(-2);
+//     printf("%f\n", addSemitones(j, 2));
+// }
+
 // Draws a rectangle defined by given coordinates.
 void drawRect(int y1, int x1, int y2, int x2)
 {
