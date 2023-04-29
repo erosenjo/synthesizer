@@ -1,5 +1,5 @@
 cflags = -g -pedantic -Wall -Wextra -std=c++11
-targets = wavegen sine.o square.o triangle.o generator.o plot.o rtaudio.o tui wavedrawtest
+targets = wavegen sine.o square.o triangle.o generator.o plot.o rtaudio.o tui wavedrawtest refactor
 aquilapath = aquila-src/aquila
 rtaudiopath = rtaudio-src
 generatorpath = $(aquilapath)/source/generator
@@ -36,3 +36,6 @@ tui: tui.c
 
 wavedrawtest: wavedrawtest.cpp generator.o sine.o square.o triangle.o
 	g++ $(cflags) -o $@ $^ -lncurses
+
+refactor: refactor.cpp generator.o sine.o square.o triangle.o
+	g++ $(cflags) -o $@ $^
