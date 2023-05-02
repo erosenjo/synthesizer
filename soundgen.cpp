@@ -4,7 +4,7 @@
  *
  */
 
-#include "rtaudio-src/RtAudio.h"
+#include <rtaudio/RtAudio.h>
 #include <cstdio>
 #include <iostream>
 
@@ -29,7 +29,6 @@ int saw( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
   return 0;
 }
 
-// this code largely informed by the Square Wave Generator article in aquila's documentation-- http://aquila-dsp.org/articles/square-wave-generator/
 int main(void){
 
     //copied from https://www.music.mcgill.ca/~gary/rtaudio/playback.html
