@@ -1,12 +1,10 @@
 /**
- * A basic proof of concept-- demonstrating usage of Aquila's synthesizer class.  
  *
  *
  *
  */
 
-#include "aquila-src/aquila/aquila.h" // contains all necessary aquila includes
-#include "rtaudio-src/RtAudio.h"
+#include <rtaudio/RtAudio.h>
 #include <cstdio>
 #include <iostream>
 
@@ -31,15 +29,7 @@ int saw( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
   return 0;
 }
 
-// this code largely informed by the Square Wave Generator article in aquila's documentation-- http://aquila-dsp.org/articles/square-wave-generator/
 int main(void){
-    Aquila::SineGenerator sinegen(1000);
-    sinegen.setFrequency(125).setAmplitude(255).generate(64);
-    Aquila::TextPlot plot("Sine wave");
-    plot.plot(sinegen);
-
-    //double *array = (double *)sinegen.toArray();
-    //for (int i = 0; i < 64; i++) printf("%f\n",array[i]);
 
     //copied from https://www.music.mcgill.ca/~gary/rtaudio/playback.html
   RtAudio dac;
