@@ -21,9 +21,12 @@ int saw( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
     for ( j=0; j<2; j++ ) {
       *buffer++ = lastValues[j];
       lastValues[j] += 0.005 * (j+1+(j*0.1));
+      printf("%f ",lastValues[j]);
       if ( lastValues[j] >= 1.0 ) lastValues[j] -= 2.0;
     }
+    printf("\n");
   }
+  printf("buffer filled\n");
   return 0;
 }
 
