@@ -7,6 +7,7 @@
 #include <iostream>
 #include <cmath>
 #include <curses.h>
+#include "aquila-src/aquila/aquila.h"
 
 //includes for tui.c
 #include <ncurses.h> //ncurses.h includes stdio.h

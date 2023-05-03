@@ -2,8 +2,8 @@ Ryan Beatty, Ben Snyder, Joshua Bowen, Emerson Rosen-Jones
 
 A project to create a CLI/TUI oscillator-based synth.
 
-Dependencies:
-alsa-lib-dev (Fedora)
+ADDED IN THIS VERSION:
+- soundgen_sine: an attempt at mushing together aquila and RtAudio
 
 TODO for gui:
 	keyboard should immediately change frequency
