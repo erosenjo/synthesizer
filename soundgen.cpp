@@ -1,12 +1,10 @@
-/**
- *
- *
+/** last changed: Ryan Beatty, 5/3/23
+ * a simple saw wave proof of concept
+ * TODO: create functions for other core wave types (e.g. sine, triangle)
  *
  */
 
-#include <rtaudio/RtAudio.h>
-#include <cstdio>
-#include <iostream>
+#include "soundgen.h"
 
 //copied from https://www.music.mcgill.ca/~gary/rtaudio/playback.html
 // Two-channel sawtooth wave generator.

@@ -7,7 +7,7 @@ generatorpath = $(aquilapath)/source/generator
 all: $(targets)
 	
 clean: 
-	rm -rf $(targets) *.dSYM/
+	rm -rf *.dSYM $(targets) 
 
 soundgen: soundgen.cpp 
 	g++ $(cflags) -D'__LINUX_ALSA__' -I/usr/include/rtaudio -o $@ $^ $(rtaudiopath)/RtAudio.cpp -lasound -lpthread
