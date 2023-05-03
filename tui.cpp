@@ -7,9 +7,11 @@
 class TUI
 {
 private:
+    static const int N_SAMPLES = 50;
     static const int WINDOW_HEIGHT = 8;
     static const int WINDOW_Y_OFFSET = 2;
     static const int WINDOW_X_OFFSET = 2;
+    SampleGenerator sg;
 
     // Draws a rectangle defined by given coordinates.
     void drawRect(int y1, int x1, int y2, int x2)
@@ -37,7 +39,7 @@ private:
         int y1 = WINDOW_Y_OFFSET - 1;
         int x1 = WINDOW_X_OFFSET - 1;
         int y2 = WINDOW_HEIGHT + WINDOW_X_OFFSET + 1;
-        int x2 = +WINDOW_X_OFFSET;
+        int x2 = WINDOW_X_OFFSET + N_SAMPLES;
         drawRect(y1, x1, y2, x2);
     }
 
@@ -46,7 +48,7 @@ private:
     {
         for (int row = 0; row < WINDOW_HEIGHT + 1; row++)
         {
-            for (int col = 0; col < nSamples(); col++)
+            for (int col = 0; col < N_SAMPLES; col++)
             {
                 displayString(row, col, (char *)" ");
             }
@@ -61,21 +63,20 @@ private:
         // Get samples
         // N_SAMPLES is really just going to be 44100
         int scaled_samples[50];
-        getScaledSamples(scaled_samples);
+        sg.getScaledSamples(scaled_samples);
 
-        for (int s = 0; s < nSamples(); s++)
+        for (int s = 0; s < N_SAMPLES; s++)
         {
             displayString(scaled_samples[s] + (WINDOW_HEIGHT / 2), s, (char *)"*");
         }
     }
-
 
 public:
     void init()
     {
         int amplitude = 255;
         int frequency = 100;
-        set(amplitude, frequency);
+        sg.set(amplitude, frequency);
 
         // Initialize ncurses
         initscr();            // Initialize ncurses screen

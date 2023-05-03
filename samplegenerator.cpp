@@ -22,11 +22,6 @@ private:
     }
 
 public:
-    static int nSamples()
-    {
-        return N_SAMPLES;
-    }
-
     void set(int a, int f)
     {
         amplitude = a;
@@ -49,19 +44,3 @@ public:
         }
     }
 };
-
-int main()
-{
-    SampleGenerator s;
-    s.set(210, 100);
-
-    int scaled_samples[50];
-    s.getScaledSamples(scaled_samples);
-
-    for (int s = 0; s < 50; s++)
-    {
-        std::cout << scaled_samples[s] << "\n";
-    }
-
-    return 0;
-}
