@@ -1,5 +1,5 @@
 cflags = -g -pedantic -Wall -Wextra -std=c++11
-targets = tui samplegenerator.o sine.o square.o triangle.o generator.o
+targets = wavedrawtest tui samplegenerator.o sine.o square.o triangle.o generator.o
 
 aquilapath = aquila-src/aquila
 generatorpath = $(aquilapath)/source/generator
@@ -8,6 +8,9 @@ all: $(targets)
 
 clean:
 	rm -rf $(targets) *.dSYM/
+
+wavedrawtest: wavedrawtest.cpp sine.o square.o triangle.o generator.o
+	g++ $(cflags) -o $@ $^ -lncurses
 
 tui: tui.cpp samplegenerator.o sine.o square.o triangle.o generator.o
 	g++ $(cflags) -o $@ $^ -lncurses
