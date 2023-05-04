@@ -1,14 +1,28 @@
 cflags = -g -pedantic -Wall -Wextra -std=c++11
-targets = tui
+targets = tui samplegenerator.o sine.o square.o triangle.o generator.o
+
 aquilapath = aquila-src/aquila
-rtaudiopath = rtaudio-src
 generatorpath = $(aquilapath)/source/generator
 
 all: $(targets)
-	
-clean: 
+
+clean:
 	rm -rf $(targets) *.dSYM/
 
-# Is there a more efficient way to link all generator files?
-tui: tui.cpp samplegenerator.cpp
-	g++ $(cflags) -o tui tui.cpp samplegenerator.cpp -lncurses
+tui: tui.cpp samplegenerator.o
+	g++ $(cflags) -o $@ $^ -lncurses
+
+samplegenerator.o: samplegenerator.cpp sine.o square.o triangle.o generator.o
+	g++ $(cflags) -c -o $@ $^
+
+sine.o: $(generatorpath)/SineGenerator.cpp
+	g++ $(cflags) -c -o $@ $^
+
+square.o: $(generatorpath)/SquareGenerator.cpp
+	g++ $(cflags) -c -o $@ $^
+
+triangle.o: $(generatorpath)/TriangleGenerator.cpp
+	g++ $(cflags) -c -o $@ $^
+
+generator.o: $(generatorpath)/Generator.cpp	
+	g++ $(cflags) -c -o $@ $^
