@@ -9,10 +9,10 @@ all: $(targets)
 clean:
 	rm -rf $(targets) *.dSYM/
 
-tui: tui.cpp samplegenerator.o
+tui: tui.cpp samplegenerator.o sine.o square.o triangle.o generator.o
 	g++ $(cflags) -o $@ $^ -lncurses
 
-samplegenerator.o: samplegenerator.cpp sine.o square.o triangle.o generator.o
+samplegenerator.o: samplegenerator.cpp
 	g++ $(cflags) -c -o $@ $^
 
 sine.o: $(generatorpath)/SineGenerator.cpp
