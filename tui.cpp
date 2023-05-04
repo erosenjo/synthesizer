@@ -1,5 +1,6 @@
-#include <curses.h>
+#include <cmath>
 #include <cstring>
+#include <curses.h>
 
 #include "tui.hpp"
 #include "samplegenerator.hpp"
@@ -30,7 +31,7 @@ void TUI::drawWaveWindow()
     int y1 = WINDOW_Y_OFFSET - 1;
     int x1 = WINDOW_X_OFFSET - 1;
     int y2 = WINDOW_HEIGHT + WINDOW_X_OFFSET + 1;
-    int x2 = WINDOW_X_OFFSET + N_SAMPLES;
+    int x2 = WINDOW_X_OFFSET + SampleGenerator::N_SAMPLES;
     drawRect(y1, x1, y2, x2);
 }
 
@@ -39,7 +40,7 @@ void TUI::clearWaveWindow()
 {
     for (int row = 0; row < WINDOW_HEIGHT + 1; row++)
     {
-        for (int col = 0; col < N_SAMPLES; col++)
+        for (int col = 0; col < SampleGenerator::N_SAMPLES; col++)
         {
             displayString(row, col, (char *)" ");
         }
@@ -53,12 +54,13 @@ void TUI::drawWave()
 
     // Get samples
     // N_SAMPLES is really just going to be 44100
-    int scaled_samples[50];
-    sg.getScaledSamples(scaled_samples);
+    double samples[SampleGenerator::N_SAMPLES];
+    sg.getSamples(samples);
 
-    for (int s = 0; s < N_SAMPLES; s++)
+    for (int s = 0; s < SampleGenerator::N_SAMPLES; s++)
     {
-        displayString(scaled_samples[s] + (WINDOW_HEIGHT / 2), s, (char *)"*");
+        int scaled_sample = round(samples[s] * SCALE_FACTOR);
+        displayString(scaled_sample + (WINDOW_HEIGHT / 2), s, (char *)"*");
     }
 }
 
@@ -85,6 +87,7 @@ void TUI::init()
 
     while (1)
     {
+        sg.set(amplitude, frequency);
         drawWave();
         switch (getch())
         {
