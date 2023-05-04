@@ -4,14 +4,14 @@
 class SampleGenerator
 {
 private:
-    static const int N_SAMPLES = 50;
-    static const int WINDOW_HEIGHT = 8;
     int amplitude;
     int frequency;
 
 public:
+    static const int N_SAMPLES = 50;
+
     void set(int, int);
-    void getScaledSamples(int *);
+    void getSamples(double *);
 };
 
 #endif /* SAMPLEGENERATOR_H */
