@@ -1,4 +1,5 @@
 #include <cmath>
+#include <cstring>
 #include <curses.h>
 
 #include "aquila-src/aquila/aquila.h"
