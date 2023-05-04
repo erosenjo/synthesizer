@@ -6,10 +6,11 @@
 class TUI
 {
 private:
-    static const int N_SAMPLES = 50;
     static const int WINDOW_HEIGHT = 8;
     static const int WINDOW_Y_OFFSET = 2;
     static const int WINDOW_X_OFFSET = 2;
+    static constexpr double SCALE_FACTOR = WINDOW_HEIGHT / ((double)255 * 2);
+
     SampleGenerator sg;
 
     void displayString(int, int, char *);
