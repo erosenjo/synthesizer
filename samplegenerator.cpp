@@ -8,18 +8,18 @@ void SampleGenerator::set(int a, int f)
     frequency = f;
 }
 
-void SampleGenerator::getScaledSamples(int *scaled_samples)
+void SampleGenerator::getSamples(double *samples)
 {
     // Generate waveform
-    Aquila::SineGenerator sinegen(44100);
+    Aquila::SineGenerator sinegen(1000);
     sinegen.setFrequency(frequency)
         .setAmplitude(amplitude)
         .generate(N_SAMPLES);
 
-    const Aquila::SampleType *samples = sinegen.toArray();
-
+    // Get samples
+    const Aquila::SampleType *samplesgen = sinegen.toArray();
     for (int s = 0; s < N_SAMPLES; s++)
     {
-        scaled_samples[s] = (int) round(samples[s] * WINDOW_HEIGHT);
+        samples[s] = samplesgen[s];
     }
 }
