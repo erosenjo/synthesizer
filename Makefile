@@ -12,7 +12,7 @@ clean:
 synth: tui.o samplegenerator.o sine.o square.o triangle.o generator.o
 	g++ $(cflags) -o $@ $^ -lncurses
 
-tui.o: tui.cpp tui.hpp
+tui.o: tui.cpp tui.hpp samplegenerator.hpp
 	g++ $(cflags) -c -o $@ tui.cpp
 
 samplegenerator.o: samplegenerator.cpp samplegenerator.hpp
