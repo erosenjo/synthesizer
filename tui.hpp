@@ -11,7 +11,7 @@ private:
 
     static const int WINDOW_HEIGHT = 8;
     static const int WINDOW_WIDTH = 50;
-    static const int PRINT_STEP = SampleGenerator::N_SAMPLES / WINDOW_WIDTH;
+    static const int DISPLAY_STEP = SampleGenerator::N_SAMPLES / WINDOW_WIDTH;
     static constexpr double SCALE_FACTOR = WINDOW_HEIGHT / ((double)255 * 2);
 
     SampleGenerator sg;
