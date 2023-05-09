@@ -6,9 +6,12 @@
 class TUI
 {
 private:
-    static const int WINDOW_HEIGHT = 8;
     static const int WINDOW_Y_OFFSET = 2;
     static const int WINDOW_X_OFFSET = 2;
+
+    static const int WINDOW_HEIGHT = 8;
+    static const int WINDOW_WIDTH = 50;
+    static const int PRINT_STEP = SampleGenerator::N_SAMPLES / WINDOW_WIDTH;
     static constexpr double SCALE_FACTOR = WINDOW_HEIGHT / ((double)255 * 2);
 
     SampleGenerator sg;
