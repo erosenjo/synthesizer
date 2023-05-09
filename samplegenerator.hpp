@@ -8,7 +8,8 @@ private:
     int frequency;
 
 public:
-    static const int N_SAMPLES = 50;
+    // Get 1 second of samples at 44100 Hz
+    static const int N_SAMPLES = 44100;
 
     void set(int, int);
     void getSamples(double *);
