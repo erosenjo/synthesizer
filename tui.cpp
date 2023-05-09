@@ -31,7 +31,7 @@ void TUI::drawWaveWindow()
     int y1 = WINDOW_Y_OFFSET - 1;
     int x1 = WINDOW_X_OFFSET - 1;
     int y2 = WINDOW_HEIGHT + WINDOW_X_OFFSET + 1;
-    int x2 = WINDOW_X_OFFSET + SampleGenerator::N_SAMPLES;
+    int x2 = WINDOW_X_OFFSET + WINDOW_WIDTH;
     drawRect(y1, x1, y2, x2);
 }
 
@@ -59,8 +59,12 @@ void TUI::drawWave()
 
     for (int s = 0; s < SampleGenerator::N_SAMPLES; s++)
     {
-        int scaled_sample = round(samples[s] * SCALE_FACTOR);
-        displayString(scaled_sample + (WINDOW_HEIGHT / 2), s, (char *)"*");
+        // Only print '*' every DISPLAY_STEP = (N_SAMPLES / WINDOW_WIDTH)th sample
+        if (s % DISPLAY_STEP == 0)
+        {
+            int scaled_sample = round(samples[s] * SCALE_FACTOR);
+            displayString(scaled_sample + (WINDOW_HEIGHT / 2), (s / DISPLAY_STEP), (char *)"*");
+        }
     }
 }
 
@@ -180,5 +184,6 @@ int main()
 {
     TUI t;
     t.init();
+
     return 0;
 }
