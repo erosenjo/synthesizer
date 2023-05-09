@@ -30,8 +30,8 @@ void TUI::drawWaveWindow()
 {
     int y1 = WINDOW_Y_OFFSET - 1;
     int x1 = WINDOW_X_OFFSET - 1;
-    int y2 = WINDOW_HEIGHT + WINDOW_X_OFFSET + 1;
-    int x2 = WINDOW_X_OFFSET + WINDOW_WIDTH;
+    int y2 = WINDOW_HEIGHT + WINDOW_Y_OFFSET + 1;
+    int x2 = WINDOW_WIDTH + WINDOW_X_OFFSET + 1;
     drawRect(y1, x1, y2, x2);
 }
 
@@ -70,9 +70,10 @@ void TUI::drawWave()
 
 void TUI::init()
 {
-    int amplitude = 255;
-    int frequency = 100;
-    sg.set(amplitude, frequency);
+    // Set initial amplitude and frequency
+    int init_amplitude = 255;
+    int init_frequency = 440;
+    sg.set(init_amplitude, init_frequency);
 
     // Initialize ncurses
     initscr();            // Initialize ncurses screen
@@ -91,29 +92,36 @@ void TUI::init()
 
     while (1)
     {
-        sg.set(amplitude, frequency);
+        int amplitude = sg.getAmplitude();
+        int frequency = sg.getFrequency();
         drawWave();
+
+        // Print amplitude and frequency
+        displayString(WINDOW_HEIGHT + 2, 0, (char *)display);
+        mvprintw(WINDOW_HEIGHT + 4 + WINDOW_Y_OFFSET, WINDOW_X_OFFSET, "%6.2f %%", amplitude * 100 / (double)255);
+        mvprintw(WINDOW_HEIGHT + 5 + WINDOW_Y_OFFSET, WINDOW_X_OFFSET, "%6d Hz", frequency);
+
         switch (getch())
         {
         case KEY_UP:
             strcpy(display, "amp++  ");
             if (amplitude <= 255 - amp_step)
-                amplitude += amp_step;
+                sg.set(amplitude + amp_step, frequency);
             break;
         case KEY_DOWN:
             strcpy(display, "amp--  ");
             if (amplitude >= amp_step)
-                amplitude -= amp_step;
+                sg.set(amplitude - amp_step, frequency);
             break;
         case KEY_RIGHT:
             strcpy(display, "freq++ ");
             if (frequency <= 1000 - freq_step)
-                frequency += freq_step;
+                sg.set(amplitude, frequency + amp_step);
             break;
         case KEY_LEFT:
             strcpy(display, "freq-- ");
             if (frequency >= freq_step)
-                frequency -= freq_step;
+                sg.set(amplitude, frequency - amp_step);
             break;
         case 'a':
             strcpy(display, "C      ");
@@ -144,6 +152,7 @@ void TUI::init()
             break;
         case 'h':
             strcpy(display, "A      ");
+            sg.set(amplitude, 440); // Make a static method for semitone -> frequency in samplegenerator!!
             break;
         case 'u':
             strcpy(display, "A# / Bb");
@@ -170,10 +179,6 @@ void TUI::init()
             strcpy(display, "F      ");
             break;
         }
-        displayString(WINDOW_HEIGHT + 2, 0, (char *)display);
-
-        mvprintw(WINDOW_HEIGHT + 4 + WINDOW_Y_OFFSET, WINDOW_X_OFFSET, "%6.2f %%", amplitude * 100 / (double)255);
-        mvprintw(WINDOW_HEIGHT + 5 + WINDOW_Y_OFFSET, WINDOW_X_OFFSET, "%6d Hz", frequency);
     }
 
     getch();
