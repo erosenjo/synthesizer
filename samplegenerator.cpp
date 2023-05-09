@@ -2,6 +2,16 @@
 
 #include "samplegenerator.hpp"
 
+int SampleGenerator::getAmplitude()
+{
+    return amplitude;
+}
+
+int SampleGenerator::getFrequency()
+{
+    return frequency;
+}
+
 void SampleGenerator::set(int a, int f)
 {
     amplitude = a;
