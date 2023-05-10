@@ -1,7 +1,8 @@
 cflags = -g -pedantic -Wall -Wextra -std=c++11
-targets = synth tui.o samplegenerator.o sine.o square.o triangle.o generator.o
+targets = alsa mac synth.o tui.o samplegenerator.o sine.o square.o triangle.o generator.o
 
 aquilapath = aquila-src/aquila
+rtaudiopath = rtaudio-src
 generatorpath = $(aquilapath)/source/generator
 
 all: $(targets)
@@ -9,8 +10,11 @@ all: $(targets)
 clean:
 	rm -rf $(targets) *.dSYM/
 
-synth: tui.o samplegenerator.o sine.o square.o triangle.o generator.o
-	g++ $(cflags) -o $@ $^ -lncurses
+alsa: tui.cpp samplegenerator.cpp
+	g++ $(cflags) -D'__LINUX_ALSA__' -I/usr/include/rtaudio -o synth $^ $(rtaudiopath)/RtAudio.cpp -lasound -lpthread -lncurses
+
+mac: tui.o samplegenerator.o sine.o square.o triangle.o generator.o
+	g++ $(cflags) -D'__MACOSX_CORE__' -o synth $^ $(rtaudiopath)/RtAudio.cpp -framework CoreAudio -framework CoreFoundation -lpthread -lncurses
 
 tui.o: tui.cpp tui.hpp samplegenerator.hpp
 	g++ $(cflags) -c -o $@ tui.cpp
