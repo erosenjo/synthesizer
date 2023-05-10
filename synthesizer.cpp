@@ -22,9 +22,11 @@ int sine(void *output_buffer, void *input_buffer, unsigned int n_frames,
 
 int main()
 {
+    // Initialize TUI
     TUI tui;
     tui.init();
 
+    // Initialize RtAudio
     RtAudio dac;
     if (dac.getDeviceCount() < 1)
     {

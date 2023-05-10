@@ -66,7 +66,8 @@ void TUI::drawWave()
 // Initializes the TUI.
 void TUI::init()
 {
-    sg = (SampleGenerator *) malloc(sizeof(SampleGenerator));
+    // Allocate space for SampleGenerator member
+    sg = (SampleGenerator *)malloc(sizeof(SampleGenerator));
 
     // Set initial amplitude and frequency
     sg->amplitude = 255;
@@ -85,8 +86,7 @@ void TUI::init()
 // Updates the TUI (one frame).
 int TUI::update()
 {
-    // Get realtime keyboard input
-
+    // Get current amplitude and frequency
     int amplitude = sg->amplitude;
     int semitones = sg->semitones;
 
@@ -97,17 +97,20 @@ int TUI::update()
     mvprintw(WINDOW_HEIGHT + 4 + WINDOW_Y_OFFSET, WINDOW_X_OFFSET, "%6.2f %%", amplitude * 100 / (double)255);
     mvprintw(WINDOW_HEIGHT + 5 + WINDOW_Y_OFFSET, WINDOW_X_OFFSET, "%6d Hz", sg->toHz());
 
+    // Get keyboard input
     switch (getch())
     {
+    case 'q':
+        return 0;
     case KEY_UP:
         strcpy(display, "amp++  ");
         if (amplitude <= 255 - AMP_STEP)
-            sg->amplitude += AMP_STEP;
+            amplitude += AMP_STEP;
         break;
     case KEY_DOWN:
         strcpy(display, "amp--  ");
         if (amplitude >= AMP_STEP)
-            sg->amplitude -= AMP_STEP;
+            amplitude -= AMP_STEP;
         break;
     case KEY_RIGHT:
         strcpy(display, "freq++ ");
@@ -119,8 +122,6 @@ int TUI::update()
         if (semitones > -24)
             semitones--;
         break;
-    case 'q':
-        return 1;
     case 'x':
         strcpy(display, "oct++  ");
         if (semitones <= 12)
@@ -205,6 +206,8 @@ int TUI::update()
         break;
     }
 
+    // Set amplitude and frequency
+    sg->amplitude = amplitude;
     sg->semitones = semitones;
     displayString(WINDOW_HEIGHT + 2, 0, (char *)display);
 
