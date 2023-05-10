@@ -89,11 +89,14 @@ void TUI::init()
 
     int amp_step = 15;
     int freq_step = 25;
+    int semitones = 0;
 
+    // open RTAudio stream here with sg as userData var
     while (1)
     {
         int amplitude = sg.getAmplitude();
         int frequency = sg.getFrequency();
+
         drawWave();
 
         // Print amplitude and frequency
@@ -125,60 +128,79 @@ void TUI::init()
             break;
         case 'a':
             strcpy(display, "C      ");
+            semitones = -9;
             break;
         case 'w':
             strcpy(display, "C# / Db");
+            semitones = -8;
             break;
         case 's':
             strcpy(display, "D      ");
+            semitones = -7;
             break;
         case 'e':
             strcpy(display, "D# / Eb");
+            semitones = -6;
             break;
         case 'd':
             strcpy(display, "E      ");
+            semitones = -5;
             break;
         case 'f':
             strcpy(display, "F      ");
+            semitones = -4;
             break;
         case 't':
             strcpy(display, "F# / Gb");
+            semitones = -3;
             break;
         case 'g':
             strcpy(display, "G      ");
+            semitones = -2;
             break;
         case 'y':
             strcpy(display, "G# / Ab");
+            semitones = -1;
             break;
         case 'h':
             strcpy(display, "A      ");
-            sg.set(amplitude, 440); // Make a static method for semitone -> frequency in samplegenerator!!
+            semitones = 0;
             break;
         case 'u':
             strcpy(display, "A# / Bb");
+            semitones = 1;
             break;
         case 'j':
             strcpy(display, "B      ");
+            semitones = 2;
             break;
         case 'k':
             strcpy(display, "C      ");
+            semitones = 3;
             break;
         case 'o':
             strcpy(display, "C# / Db");
+            semitones = 4;
             break;
         case 'l':
             strcpy(display, "D      ");
+            semitones = 5;
             break;
         case 'p':
             strcpy(display, "D# / Eb");
+            semitones = 6;
             break;
         case ';':
             strcpy(display, "E      ");
+            semitones = 7;
             break;
         case '\'':
             strcpy(display, "F      ");
+            semitones = 8;
             break;
         }
+
+        sg.set(amplitude, SampleGenerator::toFrequency(semitones));
     }
 
     getch();
@@ -190,5 +212,6 @@ int main()
     TUI t;
     t.init();
 
+    // close rtaudio stream
     return 0;
 }
