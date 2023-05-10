@@ -1,7 +1,7 @@
 #ifndef TUI_H
 #define TUI_H
 
-#include "samplegenerator.hpp"
+#include "samplegenerator.h"
 
 class TUI
 {
@@ -11,10 +11,10 @@ private:
     static const int WINDOW_HEIGHT = 8;
     static const int WINDOW_WIDTH = 50;
 
-    static const int DISPLAY_STEP = SampleGenerator::N_SAMPLES / WINDOW_WIDTH;
+    static const int DISPLAY_STEP = N_SAMPLES / WINDOW_WIDTH;
     static constexpr double SCALE_FACTOR = WINDOW_HEIGHT / ((double)255 * 2);
 
-    SampleGenerator sg;
+    SampleGenerator *sg;
 
     void displayString(int, int, char *);
     void drawRect(int, int, int, int);

@@ -5,6 +5,7 @@
  */
 
 #include "rtaudio-src/RtAudio.h"
+#include "tui.hpp"
 #include <cstdio>
 #include <iostream>
 #include <cmath>
@@ -59,9 +60,9 @@ int main(void){
     exit( 0 );
   }
   
-  char input;
-  std::cout << "\nPlaying ... press <enter> to quit.\n";
-  std::cin.get( input );
+    TUI t;
+    t.init();
+
   try {
     // Stop the stream
     dac.stopStream();

@@ -2,8 +2,24 @@
 #include <cstring>
 #include <curses.h>
 
+#include "samplegenerator.h"
 #include "tui.hpp"
-#include "samplegenerator.hpp"
+#include "rtaudio-src/RtAudio.h"
+
+//sound generating function
+int sine(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
+         double streamTime, RtAudioStreamStatus status, void *userData )
+{
+    double *buffer = (double *) outputBuffer;
+    SampleGenerator *sg = (SampleGenerator *) userData;
+
+    if ( status ) 
+        std::cout << "Stream underflow detected!" << std::endl;
+
+    getSamples(buffer, nBufferFrames, sg, streamTime);
+ 
+    return 0;
+}
 
 // Executes mvprintw with given y and x offsets.
 void TUI::displayString(int y, int x, char *symbol)
@@ -40,7 +56,7 @@ void TUI::clearWaveWindow()
 {
     for (int row = 0; row < WINDOW_HEIGHT + 1; row++)
     {
-        for (int col = 0; col < SampleGenerator::N_SAMPLES; col++)
+        for (int col = 0; col < N_SAMPLES; col++)
         {
             displayString(row, col, (char *)" ");
         }
@@ -54,10 +70,10 @@ void TUI::drawWave()
 
     // Get samples
     // N_SAMPLES is really just going to be 44100
-    double samples[SampleGenerator::N_SAMPLES];
-    sg.getSamples(samples);
+    double *samples = (double *) malloc(sizeof(double) * N_SAMPLES);
+    getSamples((double *) samples, (unsigned int) N_SAMPLES, sg, (double) 0);
 
-    for (int s = 0; s < SampleGenerator::N_SAMPLES; s++)
+    for (int s = 0; s < N_SAMPLES; s++)
     {
         // Only print '*' every DISPLAY_STEP = (N_SAMPLES / WINDOW_WIDTH)th sample
         if (s % DISPLAY_STEP == 0)
@@ -71,9 +87,9 @@ void TUI::drawWave()
 void TUI::init()
 {
     // Set initial amplitude and frequency
-    int init_amplitude = 255;
-    int init_frequency = 440;
-    sg.set(init_amplitude, init_frequency);
+    sg = (SampleGenerator *) malloc(sizeof(SampleGenerator));
+    sg->amplitude = 255;
+    sg->frequency = 440;
 
     // Initialize ncurses
     initscr();            // Initialize ncurses screen
@@ -92,10 +108,34 @@ void TUI::init()
     int semitones = 0;
 
     // open RTAudio stream here with sg as userData var
+    //copied from https://www.music.mcgill.ca/~gary/rtaudio/playback.html
+    //modified slightly
+  RtAudio dac;
+  if ( dac.getDeviceCount() < 1 ) {
+    std::cout << "\nNo audio devices found!\n";
+    exit( 0 );
+  }
+  RtAudio::StreamParameters parameters;
+  parameters.deviceId = dac.getDefaultOutputDevice();
+  parameters.nChannels = 1;
+  parameters.firstChannel = 0;
+  unsigned int sampleRate = 44100;
+  unsigned int bufferFrames = 256; // 256 sample frames
+  try {
+    dac.openStream( &parameters, NULL, RTAUDIO_FLOAT64,
+                    sampleRate, &bufferFrames, &sine, (void *)sg );
+    dac.startStream();
+  }
+  catch ( RtAudioError& e ) {
+    e.printMessage();
+    exit( 0 );
+  }
+//end copied segment
+
     while (1)
     {
-        int amplitude = sg.getAmplitude();
-        int frequency = sg.getFrequency();
+        int amplitude = sg->amplitude;
+        int frequency = sg->frequency;
 
         drawWave();
 
@@ -109,22 +149,22 @@ void TUI::init()
         case KEY_UP:
             strcpy(display, "amp++  ");
             if (amplitude <= 255 - amp_step)
-                sg.set(amplitude + amp_step, frequency);
+                sg->amplitude+= amp_step; 
             break;
         case KEY_DOWN:
             strcpy(display, "amp--  ");
             if (amplitude >= amp_step)
-                sg.set(amplitude - amp_step, frequency);
+                sg->amplitude-= amp_step;
             break;
         case KEY_RIGHT:
             strcpy(display, "freq++ ");
             if (frequency <= 1000 - freq_step)
-                sg.set(amplitude, frequency + amp_step);
+                sg->frequency+= amp_step;
             break;
         case KEY_LEFT:
             strcpy(display, "freq-- ");
             if (frequency >= freq_step)
-                sg.set(amplitude, frequency - amp_step);
+                sg->frequency-= amp_step;
             break;
         case 'a':
             strcpy(display, "C      ");
@@ -200,11 +240,23 @@ void TUI::init()
             break;
         }
 
-        sg.set(amplitude, SampleGenerator::toFrequency(semitones));
+        sg->frequency = toFrequency(semitones);
     }
 
     getch();
     endwin();
+
+    //copied from https://www.music.mcgill.ca/~gary/rtaudio/playback.html
+    try {
+        // Stop the stream
+        dac.stopStream();
+    }
+    catch (RtAudioError& e) {
+        e.printMessage();
+    }
+    if ( dac.isStreamOpen() ) dac.closeStream();
+    //end copied segment
+
 }
 
 int main()
