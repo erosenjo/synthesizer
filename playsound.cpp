@@ -4,7 +4,7 @@
  *
  */
 
-#include <rtaudio/RtAudio.h>
+#include "rtaudio-src/RtAudio.h"
 #include <cstdio>
 #include <iostream>
 #include <cmath>
