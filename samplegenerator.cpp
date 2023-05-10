@@ -1,21 +1,10 @@
 #include <cmath>
 
-#include "aquila-src/aquila/aquila.h"
 #include "samplegenerator.hpp"
 
 int SampleGenerator::toFrequency(int semitones)
 {
     return round(440 * pow(2, semitones / (double)12));
-}
-
-int SampleGenerator::getAmplitude()
-{
-    return amplitude;
-}
-
-int SampleGenerator::getFrequency()
-{
-    return frequency;
 }
 
 void SampleGenerator::set(int a, int f)
@@ -24,18 +13,15 @@ void SampleGenerator::set(int a, int f)
     frequency = f;
 }
 
-void SampleGenerator::getSamples(double *samples)
+void SampleGenerator::getSamples(double *buffer, int n_frames, double stream_time)
 {
-    // Generate waveform
-    Aquila::SineGenerator sinegen(1000);
-    sinegen.setFrequency(frequency)
-        .setAmplitude(amplitude)
-        .generate(N_SAMPLES);
-
-    // Get samples
-    const Aquila::SampleType *samplesgen = sinegen.toArray();
-    for (int s = 0; s < N_SAMPLES; s++)
+    for (int frame_i = 0; frame_i < n_frames; frame_i++)
     {
-        samples[s] = samplesgen[s];
+        /* equation for the sin wave.
+        everything until "freq" converts a time to radians;
+        everything after gets a time based on the time elapsed since the start of the
+        stream and the time per sample, incremented for each sample */
+        *buffer++ = (amplitude / (double)255) *
+                    sin(2 * PI * frequency * ((frame_i / (double)44100) + stream_time));
     }
 }

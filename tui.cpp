@@ -31,7 +31,7 @@ void TUI::drawWaveWindow()
     int y1 = WINDOW_Y_OFFSET - 1;
     int x1 = WINDOW_X_OFFSET - 1;
     int y2 = WINDOW_HEIGHT + WINDOW_Y_OFFSET + 1;
-    int x2 = WINDOW_WIDTH + WINDOW_X_OFFSET + 1;
+    int x2 = WINDOW_WIDTH + WINDOW_X_OFFSET;
     drawRect(y1, x1, y2, x2);
 }
 
@@ -40,7 +40,7 @@ void TUI::clearWaveWindow()
 {
     for (int row = 0; row < WINDOW_HEIGHT + 1; row++)
     {
-        for (int col = 0; col < SampleGenerator::N_SAMPLES; col++)
+        for (int col = 0; col < WINDOW_WIDTH; col++)
         {
             displayString(row, col, (char *)" ");
         }
@@ -53,19 +53,17 @@ void TUI::drawWave()
     clearWaveWindow();
 
     // Get samples
-    // N_SAMPLES is really just going to be 44100
-    double samples[SampleGenerator::N_SAMPLES];
-    sg.getSamples(samples);
+    double samples[WINDOW_WIDTH];
+    sg.getSamples(samples, WINDOW_WIDTH, 0);
 
     for (int s = 0; s < WINDOW_WIDTH; s++)
     {
-        // Only print '*' every DISPLAY_STEP = (N_SAMPLES / WINDOW_WIDTH)th sample
         int scaled_sample = round(samples[s] * SCALE_FACTOR);
         displayString(scaled_sample + (WINDOW_HEIGHT / 2), s, (char *)"*");
     }
 }
 
-void TUI::init()
+void TUI::update()
 {
     // Set initial amplitude and frequency
     int init_amplitude = 255;
@@ -93,8 +91,8 @@ void TUI::init()
 
     while (1)
     {
-        int amplitude = sg.getAmplitude();
-        int frequency = sg.getFrequency();
+        int amplitude = sg.amplitude;
+        int frequency = sg.frequency;
 
         drawWave();
 
@@ -214,13 +212,4 @@ void TUI::init()
 
     getch();
     endwin();
-}
-
-int main()
-{
-    TUI t;
-    t.init();
-
-    // close rtaudio stream
-    return 0;
 }

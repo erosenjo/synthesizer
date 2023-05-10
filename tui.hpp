@@ -11,8 +11,7 @@ private:
     static const int WINDOW_HEIGHT = 16;
     static const int WINDOW_WIDTH = 128;
 
-    static const int DISPLAY_STEP = SampleGenerator::N_SAMPLES / WINDOW_WIDTH;
-    static constexpr double SCALE_FACTOR = WINDOW_HEIGHT / ((double)255 * 2);
+    static const int SCALE_FACTOR = WINDOW_HEIGHT / 2;
 
     SampleGenerator sg;
 
@@ -24,7 +23,7 @@ private:
     void drawWave();
 
 public:
-    void init();
+    void update();
 };
 
 #endif /* TUI_H */
