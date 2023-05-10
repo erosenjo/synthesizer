@@ -125,6 +125,16 @@ void TUI::init()
             if (frequency > SampleGenerator::toFrequency(-24))
                 semitones--;
             break;
+        case 'x':
+            strcpy(display, "oct++  ");
+            if (frequency <= SampleGenerator::toFrequency(12))
+                semitones += 12;
+            break;
+        case 'z':
+            strcpy(display, "oct--  ");
+            if (frequency >= SampleGenerator::toFrequency(-12))
+                semitones -= 12;
+            break;
         case 'a':
             strcpy(display, "C      ");
             semitones = -9;
