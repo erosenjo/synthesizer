@@ -2,3 +2,10 @@ Ryan Beatty, Ben Snyder, Joshua Bowen, Emerson Rosen-Jones
 
 A project to create a CLI/TUI oscillator-based synth.
 
+
+TODO for gui:
+	fix window right edge?
+	keyboard should immediately change frequency
+	button for play/pause
+	preset buttons for wave shape - square, sine, etc
+	samples -> rtaudio!

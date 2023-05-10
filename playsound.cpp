@@ -7,26 +7,31 @@
 #include <rtaudio/RtAudio.h>
 #include <cstdio>
 #include <iostream>
+#include <cmath>
 
-//copied from https://www.music.mcgill.ca/~gary/rtaudio/playback.html
-// Two-channel sawtooth wave generator.
-int saw( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
+int sine(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
          double streamTime, RtAudioStreamStatus status, void *userData )
 {
-  unsigned int i, j;
-  double *buffer = (double *) outputBuffer;
-  double *lastValues = (double *) userData;
-  if ( status )
-    std::cout << "Stream underflow detected!" << std::endl;
-  // Write interleaved audio data.
-  for ( i=0; i<nBufferFrames; i++ ) {
-    for ( j=0; j<2; j++ ) {
-      *buffer++ = lastValues[j];
-      lastValues[j] += 0.005 * (j+1+(j*0.1));
-      if ( lastValues[j] >= 1.0 ) lastValues[j] -= 2.0;
+    static double pi = 3.14159;
+    double *buffer = (double *) outputBuffer;
+    double *freq = (double *) userData;
+
+    if ( status ) 
+        std::cout << "Stream underflow detected!" << std::endl;
+ 
+    // write non-interleaved audio data using aquila
+    for (unsigned int i = 0; i <= nBufferFrames; i++){
+        *buffer++ = sin(
+                //equation for the sin wave.
+                //everything until "freq" converts a time to radians
+                //everything after gets a time based on the
+                //time elapsed since the start of the stream and
+                //the time per sample, incremented for each sample
+                2 * pi * *freq * ((i / (double) 44100) + streamTime)
+                );
+        if (i == 0 || i == nBufferFrames) printf("ends: %f\n",buffer[-1]);
     }
-  }
-  return 0;
+    return 0;
 }
 
 int main(void){
@@ -39,14 +44,14 @@ int main(void){
   }
   RtAudio::StreamParameters parameters;
   parameters.deviceId = dac.getDefaultOutputDevice();
-  parameters.nChannels = 2;
+  parameters.nChannels = 1;
   parameters.firstChannel = 0;
   unsigned int sampleRate = 44100;
   unsigned int bufferFrames = 256; // 256 sample frames
-  double data[2] = {0, 0};
+  double freq = 440;
   try {
     dac.openStream( &parameters, NULL, RTAUDIO_FLOAT64,
-                    sampleRate, &bufferFrames, &saw, (void *)&data );
+                    sampleRate, &bufferFrames, &sine, (void *)&freq );
     dac.startStream();
   }
   catch ( RtAudioError& e ) {
