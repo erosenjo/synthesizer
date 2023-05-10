@@ -14,16 +14,14 @@ int sine(void *output_buffer, void *input_buffer, unsigned int n_frames,
         std::cout << "Stream underflow detected!" << std::endl;
         return 1;
     }
-    puts("E");
 
-    // sg->getSamples(buffer, n_frames, stream_time);
+    sg->getSamples(buffer, n_frames, stream_time);
 
     return 0;
 }
 
 int main()
 {
-    SampleGenerator sg;
     TUI tui;
     tui.init();
 
@@ -41,7 +39,11 @@ int main()
     unsigned int buffer_frames = 256;
     try
     {
-        dac.openStream(&params, NULL, RTAUDIO_FLOAT64, sample_rate, &buffer_frames, &sine, (void *)&sg);
+        dac.openStream(
+                &params, NULL, RTAUDIO_FLOAT64, 
+                sample_rate, &buffer_frames, &sine, 
+                (void *)tui.sg
+                );
         dac.startStream();
     }
     catch (RtAudioError e)
@@ -50,10 +52,13 @@ int main()
         return 1;
     }
 
-    while (1)
+    int done = 0;
+    while (!done)
     {
-        tui.update();
+        done = tui.update();
     }
+
+    tui.close();
 
     return 0;
 }

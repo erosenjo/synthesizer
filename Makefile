@@ -8,7 +8,7 @@ all: $(targets)
 clean:
 	rm -rf $(targets) synth *.dSYM/
 
-alsa: synthesizer.o samplegenerator.o tui.o $(rtaudio)
+alsa: synthesizer.cpp samplegenerator.cpp tui.cpp $(rtaudio)
 	g++ $(cflags) -o synth $^ -D'__LINUX_ALSA__' -I/usr/include/rtaudio -lasound -lpthread -lncurses
 
 mac: synthesizer.o samplegenerator.o tui.o $(rtaudio)

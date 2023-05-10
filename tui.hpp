@@ -14,8 +14,6 @@ private:
     static const int SCALE_FACTOR = WINDOW_HEIGHT / 2;
     static const int AMP_STEP = 15;
 
-    SampleGenerator *sg;
-
     void displayString(int, int, char *);
     void drawRect(int, int, int, int);
 
@@ -24,8 +22,11 @@ private:
     void drawWave();
 
 public:
+    SampleGenerator *sg;
+
     void init();
-    void update();
+    int update();
+    int close();
 };
 
 #endif /* TUI_H */

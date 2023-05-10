@@ -66,6 +66,8 @@ void TUI::drawWave()
 // Initializes the TUI.
 void TUI::init()
 {
+    sg = (SampleGenerator *) malloc(sizeof(SampleGenerator));
+
     // Set initial amplitude and frequency
     sg->amplitude = 255;
     sg->semitones = 0;
@@ -81,7 +83,7 @@ void TUI::init()
 }
 
 // Updates the TUI (one frame).
-void TUI::update()
+int TUI::update()
 {
     // Get realtime keyboard input
 
@@ -101,12 +103,12 @@ void TUI::update()
         strcpy(display, "amp++  ");
         if (amplitude <= 255 - AMP_STEP)
             sg->amplitude += AMP_STEP;
-        return;
+        break;
     case KEY_DOWN:
         strcpy(display, "amp--  ");
         if (amplitude >= AMP_STEP)
             sg->amplitude -= AMP_STEP;
-        return;
+        break;
     case KEY_RIGHT:
         strcpy(display, "freq++ ");
         if (semitones < 24)
@@ -117,6 +119,8 @@ void TUI::update()
         if (semitones > -24)
             semitones--;
         break;
+    case 'q':
+        return 1;
     case 'x':
         strcpy(display, "oct++  ");
         if (semitones <= 12)
@@ -203,4 +207,15 @@ void TUI::update()
 
     sg->semitones = semitones;
     displayString(WINDOW_HEIGHT + 2, 0, (char *)display);
+
+    return 0;
+}
+
+int TUI::close()
+{
+    endwin();
+
+    free(sg);
+
+    return 0;
 }
