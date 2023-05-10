@@ -57,14 +57,11 @@ void TUI::drawWave()
     double samples[SampleGenerator::N_SAMPLES];
     sg.getSamples(samples);
 
-    for (int s = 0; s < SampleGenerator::N_SAMPLES; s++)
+    for (int s = 0; s < WINDOW_WIDTH; s++)
     {
         // Only print '*' every DISPLAY_STEP = (N_SAMPLES / WINDOW_WIDTH)th sample
-        if (s % DISPLAY_STEP == 0)
-        {
-            int scaled_sample = round(samples[s] * SCALE_FACTOR);
-            displayString(scaled_sample + (WINDOW_HEIGHT / 2), (s / DISPLAY_STEP), (char *)"*");
-        }
+        int scaled_sample = round(samples[s] * SCALE_FACTOR);
+        displayString(scaled_sample + (WINDOW_HEIGHT / 2), s, (char *)"*");
     }
 }
 
@@ -88,10 +85,12 @@ void TUI::init()
     char display[20];
 
     int amp_step = 15;
-    int freq_step = 25;
     int semitones = 0;
 
     // open RTAudio stream here with sg as userData var
+
+    // Only have 12 predefined visuals for each wave.
+
     while (1)
     {
         int amplitude = sg.getAmplitude();
@@ -118,14 +117,14 @@ void TUI::init()
             continue;
         case KEY_RIGHT:
             strcpy(display, "freq++ ");
-            if (frequency <= 1000 - freq_step)
-                sg.set(amplitude, frequency + amp_step);
-            continue;
+            if (frequency < SampleGenerator::toFrequency(24))
+                semitones++;
+            break;
         case KEY_LEFT:
             strcpy(display, "freq-- ");
-            if (frequency >= freq_step)
-                sg.set(amplitude, frequency - amp_step);
-            continue;
+            if (frequency > SampleGenerator::toFrequency(-24))
+                semitones--;
+            break;
         case 'a':
             strcpy(display, "C      ");
             semitones = -9;
