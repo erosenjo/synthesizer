@@ -110,22 +110,22 @@ void TUI::init()
             strcpy(display, "amp++  ");
             if (amplitude <= 255 - amp_step)
                 sg.set(amplitude + amp_step, frequency);
-            break;
+            continue;
         case KEY_DOWN:
             strcpy(display, "amp--  ");
             if (amplitude >= amp_step)
                 sg.set(amplitude - amp_step, frequency);
-            break;
+            continue;
         case KEY_RIGHT:
             strcpy(display, "freq++ ");
             if (frequency <= 1000 - freq_step)
                 sg.set(amplitude, frequency + amp_step);
-            break;
+            continue;
         case KEY_LEFT:
             strcpy(display, "freq-- ");
             if (frequency >= freq_step)
                 sg.set(amplitude, frequency - amp_step);
-            break;
+            continue;
         case 'a':
             strcpy(display, "C      ");
             semitones = -9;
