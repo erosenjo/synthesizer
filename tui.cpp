@@ -63,7 +63,8 @@ void TUI::drawWave()
     }
 }
 
-void TUI::update()
+// Initializes the TUI.
+void TUI::init()
 {
     // Set initial amplitude and frequency
     int init_amplitude = 255;
@@ -78,138 +79,130 @@ void TUI::update()
     keypad(stdscr, TRUE); // Allow for arrow key input
 
     drawWaveWindow();
+}
 
+// Updates the TUI (one frame).
+void TUI::update()
+{
     // Get realtime keyboard input
-    char display[20];
-
     int amp_step = 15;
-    int semitones = 0;
 
-    // open RTAudio stream here with sg as userData var
+    int amplitude = sg.amplitude;
+    int frequency = sg.frequency;
 
-    // Only have 12 predefined visuals for each wave.
+    drawWave();
 
-    while (1)
+    // Print amplitude and frequency
+    char display[20];
+    mvprintw(WINDOW_HEIGHT + 4 + WINDOW_Y_OFFSET, WINDOW_X_OFFSET, "%6.2f %%", amplitude * 100 / (double)255);
+    mvprintw(WINDOW_HEIGHT + 5 + WINDOW_Y_OFFSET, WINDOW_X_OFFSET, "%6d Hz", frequency);
+
+    switch (getch())
     {
-        int amplitude = sg.amplitude;
-        int frequency = sg.frequency;
-
-        drawWave();
-
-        // Print amplitude and frequency
-        displayString(WINDOW_HEIGHT + 2, 0, (char *)display);
-        mvprintw(WINDOW_HEIGHT + 4 + WINDOW_Y_OFFSET, WINDOW_X_OFFSET, "%6.2f %%", amplitude * 100 / (double)255);
-        mvprintw(WINDOW_HEIGHT + 5 + WINDOW_Y_OFFSET, WINDOW_X_OFFSET, "%6d Hz", frequency);
-
-        switch (getch())
-        {
-        case KEY_UP:
-            strcpy(display, "amp++  ");
-            if (amplitude <= 255 - amp_step)
-                sg.set(amplitude + amp_step, frequency);
-            continue;
-        case KEY_DOWN:
-            strcpy(display, "amp--  ");
-            if (amplitude >= amp_step)
-                sg.set(amplitude - amp_step, frequency);
-            continue;
-        case KEY_RIGHT:
-            strcpy(display, "freq++ ");
-            if (frequency < SampleGenerator::toFrequency(24))
-                semitones++;
-            break;
-        case KEY_LEFT:
-            strcpy(display, "freq-- ");
-            if (frequency > SampleGenerator::toFrequency(-24))
-                semitones--;
-            break;
-        case 'x':
-            strcpy(display, "oct++  ");
-            if (frequency <= SampleGenerator::toFrequency(12))
-                semitones += 12;
-            break;
-        case 'z':
-            strcpy(display, "oct--  ");
-            if (frequency >= SampleGenerator::toFrequency(-12))
-                semitones -= 12;
-            break;
-        case 'a':
-            strcpy(display, "C      ");
-            semitones = -9;
-            break;
-        case 'w':
-            strcpy(display, "C# / Db");
-            semitones = -8;
-            break;
-        case 's':
-            strcpy(display, "D      ");
-            semitones = -7;
-            break;
-        case 'e':
-            strcpy(display, "D# / Eb");
-            semitones = -6;
-            break;
-        case 'd':
-            strcpy(display, "E      ");
-            semitones = -5;
-            break;
-        case 'f':
-            strcpy(display, "F      ");
-            semitones = -4;
-            break;
-        case 't':
-            strcpy(display, "F# / Gb");
-            semitones = -3;
-            break;
-        case 'g':
-            strcpy(display, "G      ");
-            semitones = -2;
-            break;
-        case 'y':
-            strcpy(display, "G# / Ab");
-            semitones = -1;
-            break;
-        case 'h':
-            strcpy(display, "A      ");
-            semitones = 0;
-            break;
-        case 'u':
-            strcpy(display, "A# / Bb");
-            semitones = 1;
-            break;
-        case 'j':
-            strcpy(display, "B      ");
-            semitones = 2;
-            break;
-        case 'k':
-            strcpy(display, "C      ");
-            semitones = 3;
-            break;
-        case 'o':
-            strcpy(display, "C# / Db");
-            semitones = 4;
-            break;
-        case 'l':
-            strcpy(display, "D      ");
-            semitones = 5;
-            break;
-        case 'p':
-            strcpy(display, "D# / Eb");
-            semitones = 6;
-            break;
-        case ';':
-            strcpy(display, "E      ");
-            semitones = 7;
-            break;
-        case '\'':
-            strcpy(display, "F      ");
-            semitones = 8;
-            break;
-        }
-
-        sg.set(amplitude, SampleGenerator::toFrequency(semitones));
+    case KEY_UP:
+        strcpy(display, "amp++  ");
+        if (amplitude <= 255 - amp_step)
+            sg.set(amplitude + amp_step, frequency);
+        return;
+    case KEY_DOWN:
+        strcpy(display, "amp--  ");
+        if (amplitude >= amp_step)
+            sg.set(amplitude - amp_step, frequency);
+        return;
+    case KEY_RIGHT:
+        strcpy(display, "freq++ ");
+        if (frequency < SampleGenerator::toFrequency(24))
+            semitones++;
+        break;
+    case KEY_LEFT:
+        strcpy(display, "freq-- ");
+        if (frequency > SampleGenerator::toFrequency(-24))
+            semitones--;
+        break;
+    case 'x':
+        strcpy(display, "oct++  ");
+        if (frequency <= SampleGenerator::toFrequency(12))
+            semitones += 12;
+        break;
+    case 'z':
+        strcpy(display, "oct--  ");
+        if (frequency >= SampleGenerator::toFrequency(-12))
+            semitones -= 12;
+        break;
+    case 'a':
+        strcpy(display, "C      ");
+        semitones = -9;
+        break;
+    case 'w':
+        strcpy(display, "C# / Db");
+        semitones = -8;
+        break;
+    case 's':
+        strcpy(display, "D      ");
+        semitones = -7;
+        break;
+    case 'e':
+        strcpy(display, "D# / Eb");
+        semitones = -6;
+        break;
+    case 'd':
+        strcpy(display, "E      ");
+        semitones = -5;
+        break;
+    case 'f':
+        strcpy(display, "F      ");
+        semitones = -4;
+        break;
+    case 't':
+        strcpy(display, "F# / Gb");
+        semitones = -3;
+        break;
+    case 'g':
+        strcpy(display, "G      ");
+        semitones = -2;
+        break;
+    case 'y':
+        strcpy(display, "G# / Ab");
+        semitones = -1;
+        break;
+    case 'h':
+        strcpy(display, "A      ");
+        semitones = 0;
+        break;
+    case 'u':
+        strcpy(display, "A# / Bb");
+        semitones = 1;
+        break;
+    case 'j':
+        strcpy(display, "B      ");
+        semitones = 2;
+        break;
+    case 'k':
+        strcpy(display, "C      ");
+        semitones = 3;
+        break;
+    case 'o':
+        strcpy(display, "C# / Db");
+        semitones = 4;
+        break;
+    case 'l':
+        strcpy(display, "D      ");
+        semitones = 5;
+        break;
+    case 'p':
+        strcpy(display, "D# / Eb");
+        semitones = 6;
+        break;
+    case ';':
+        strcpy(display, "E      ");
+        semitones = 7;
+        break;
+    case '\'':
+        strcpy(display, "F      ");
+        semitones = 8;
+        break;
     }
 
-    getch();
-    endwin();
+    sg.set(amplitude, SampleGenerator::toFrequency(semitones));
+    displayString(WINDOW_HEIGHT + 2, 0, (char *)display);
 }
