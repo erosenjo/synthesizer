@@ -1,14 +1,11 @@
-/**
- * A basic proof of concept-- demonstrating usage of Aquila's synthesizer class.  
- *
- *
+/** last changed: Ryan Beatty, 5/3/23
+ * a simple sine wave proof of concept, 
+ * showing how to use aquila and rtaudio together. 
+ * 
  *
  */
 
-#include "aquila-src/aquila/aquila.h" // contains all necessary aquila includes
-#include "rtaudio-src/RtAudio.h"
-#include <cstdio>
-#include <iostream>
+#include "soundgen.h"
 
 //copied from https://www.music.mcgill.ca/~gary/rtaudio/playback.html
 // Two-channel sawtooth wave generator.
@@ -31,15 +28,25 @@ int saw( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
   return 0;
 }
 
-// this code largely informed by the Square Wave Generator article in aquila's documentation-- http://aquila-dsp.org/articles/square-wave-generator/
-int main(void){
-    Aquila::SineGenerator sinegen(1000);
-    sinegen.setFrequency(125).setAmplitude(255).generate(64);
-    Aquila::TextPlot plot("Sine wave");
-    plot.plot(sinegen);
+int sine(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
+         double streamTime, RtAudioStreamStatus status, void *userData )
+{
+    double *buffer = (double *) outputBuffer;
+    Aquila::SineGenerator *sinegen = (Aquila::SineGenerator *) userData;
 
-    //double *array = (double *)sinegen.toArray();
-    //for (int i = 0; i < 64; i++) printf("%f\n",array[i]);
+    if ( status ) 
+        std::cout << "Stream underflow detected!" << std::endl;
+ 
+    // write non-interleaved audio data using aquila
+    sinegen->generate(nBufferFrames);  
+    for (unsigned int i = 0; i <= nBufferFrames; i++){
+        *buffer++ = sinegen->sample(i);
+    }
+    return 0;
+}
+
+
+int main(void){
 
     //copied from https://www.music.mcgill.ca/~gary/rtaudio/playback.html
   RtAudio dac;
@@ -49,14 +56,17 @@ int main(void){
   }
   RtAudio::StreamParameters parameters;
   parameters.deviceId = dac.getDefaultOutputDevice();
-  parameters.nChannels = 2;
+  parameters.nChannels = 1;
   parameters.firstChannel = 0;
   unsigned int sampleRate = 44100;
   unsigned int bufferFrames = 256; // 256 sample frames
+  Aquila::SineGenerator sinegen(sampleRate);
+  sinegen.setFrequency(440).setAmplitude(1); // amplitude set to 1 bc
+                                             // rtaudio samples are -1..1
   double data[2] = {0, 0};
   try {
     dac.openStream( &parameters, NULL, RTAUDIO_FLOAT64,
-                    sampleRate, &bufferFrames, &saw, (void *)&data );
+                    sampleRate, &bufferFrames, &sine, &sinegen);
     dac.startStream();
   }
   catch ( RtAudioError& e ) {
