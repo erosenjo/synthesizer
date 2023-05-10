@@ -89,7 +89,8 @@ void TUI::init()
     // Set initial amplitude and frequency
     sg = (SampleGenerator *) malloc(sizeof(SampleGenerator));
     sg->amplitude = 255;
-    sg->frequency = 440;
+    sg->octave = 0;
+    sg->semitones = 0;
 
     // Initialize ncurses
     initscr();            // Initialize ncurses screen
@@ -104,7 +105,6 @@ void TUI::init()
     char display[20];
 
     int amp_step = 15;
-    int freq_step = 25;
     int semitones = 0;
 
     // open RTAudio stream here with sg as userData var
@@ -135,14 +135,14 @@ void TUI::init()
     while (1)
     {
         int amplitude = sg->amplitude;
-        int frequency = sg->frequency;
+        int semitones = sg->semitones;
 
         drawWave();
 
         // Print amplitude and frequency
         displayString(WINDOW_HEIGHT + 2, 0, (char *)display);
         mvprintw(WINDOW_HEIGHT + 4 + WINDOW_Y_OFFSET, WINDOW_X_OFFSET, "%6.2f %%", amplitude * 100 / (double)255);
-        mvprintw(WINDOW_HEIGHT + 5 + WINDOW_Y_OFFSET, WINDOW_X_OFFSET, "%6d Hz", frequency);
+        mvprintw(WINDOW_HEIGHT + 5 + WINDOW_Y_OFFSET, WINDOW_X_OFFSET, "%6d Hz", toFrequency(sg));
 
         switch (getch())
         {
@@ -158,13 +158,13 @@ void TUI::init()
             break;
         case KEY_RIGHT:
             strcpy(display, "freq++ ");
-            if (frequency <= 1000 - freq_step)
-                sg->frequency+= amp_step;
+            if (sg->octave <= 6)
+                semitones++;
             break;
         case KEY_LEFT:
             strcpy(display, "freq-- ");
-            if (frequency >= freq_step)
-                sg->frequency-= amp_step;
+            if (semitones >= 0)
+                semitones--;
             break;
         case 'a':
             strcpy(display, "C      ");
@@ -240,7 +240,7 @@ void TUI::init()
             break;
         }
 
-        sg->frequency = toFrequency(semitones);
+        sg->semitones = semitones;
     }
 
     getch();

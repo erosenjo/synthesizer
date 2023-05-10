@@ -6,11 +6,12 @@
 typedef struct SampleGenerator
 {
     int amplitude;
-    int frequency;
+    int octave;
+    int semitones;
 
 } SampleGenerator;
 
-int toFrequency(int);
+int toFrequency(SampleGenerator *sg);
 void getSamples(double *buffer, unsigned int nBufferFrames, SampleGenerator *sg, double streamTime);
 
 #endif /* SAMPLEGENERATOR_H */

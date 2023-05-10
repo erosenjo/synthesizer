@@ -2,9 +2,9 @@
 
 #include "samplegenerator.h"
 
-int toFrequency(int semitones)
+int toFrequency(SampleGenerator *sg)
 {
-    return round(440 * pow(2, semitones / (double)12));
+    return round(440 * pow(2, sg->octave) * pow(2, sg->semitones / (double)12));
 }
 
 void getSamples(double *buffer, unsigned int nBufferFrames, SampleGenerator *sg, double streamTime)
@@ -18,7 +18,7 @@ void getSamples(double *buffer, unsigned int nBufferFrames, SampleGenerator *sg,
                 //everything after gets a time based on the
                 //time elapsed since the start of the stream and
                 //the time per sample, incremented for each sample
-                2 * pi * sg->frequency * ((i / (double) 44100) + streamTime)
+                2 * pi * toFrequency(sg) * ((i / (double) 44100) + streamTime)
                 );
     }
 }
