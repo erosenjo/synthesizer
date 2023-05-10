@@ -8,9 +8,9 @@ private:
 
 public:
     int amplitude;
-    int frequency;
+    int semitones;
 
-    static int toFrequency(int);
+    int toHz();
     void set(int, int);
     void getSamples(double *, int, double);
 };

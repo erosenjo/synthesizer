@@ -2,15 +2,15 @@
 
 #include "samplegenerator.hpp"
 
-int SampleGenerator::toFrequency(int semitones)
+int SampleGenerator::toHz()
 {
     return round(440 * pow(2, semitones / (double)12));
 }
 
-void SampleGenerator::set(int a, int f)
+void SampleGenerator::set(int a, int s)
 {
     amplitude = a;
-    frequency = f;
+    semitones = s;
 }
 
 void SampleGenerator::getSamples(double *buffer, int n_frames, double stream_time)
@@ -22,6 +22,6 @@ void SampleGenerator::getSamples(double *buffer, int n_frames, double stream_tim
         everything after gets a time based on the time elapsed since the start of the
         stream and the time per sample, incremented for each sample */
         *buffer++ = (amplitude / (double)255) *
-                    sin(2 * PI * frequency * ((frame_i / (double)44100) + stream_time));
+                    sin(2 * PI * semitones * ((frame_i / (double)44100) + stream_time));
     }
 }

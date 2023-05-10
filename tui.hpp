@@ -12,9 +12,9 @@ private:
     static const int WINDOW_WIDTH = 128;
 
     static const int SCALE_FACTOR = WINDOW_HEIGHT / 2;
+    static const int AMP_STEP = 15;
 
-    SampleGenerator sg;
-    int semitones;
+    SampleGenerator *sg;
 
     void displayString(int, int, char *);
     void drawRect(int, int, int, int);

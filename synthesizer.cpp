@@ -7,18 +7,18 @@ int sine(void *output_buffer, void *input_buffer, unsigned int n_frames,
          double stream_time, RtAudioStreamStatus status, void *user_data)
 {
     double *buffer = (double *)output_buffer;
-    // SampleGenerator *sg = (SampleGenerator *)user_data;
+    SampleGenerator *sg = (SampleGenerator *)user_data;
 
-    // if (status)
-    // {
-    //     std::cout << "Stream underflow detected!" << std::endl;
-    //     return 1;
-    // }
-    // puts("E");
+    if (status)
+    {
+        std::cout << "Stream underflow detected!" << std::endl;
+        return 1;
+    }
+    puts("E");
 
-    // // sg->getSamples(buffer, n_frames, stream_time);
+    // sg->getSamples(buffer, n_frames, stream_time);
 
-    // return 0;
+    return 0;
 }
 
 int main()
