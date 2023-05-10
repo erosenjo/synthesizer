@@ -6,6 +6,7 @@ ADDED IN THIS VERSION:
 - soundgen_sine: an attempt at mushing together aquila and RtAudio
 
 TODO for gui:
+	fix window right edge?
 	keyboard should immediately change frequency
 	button for play/pause
 	preset buttons for wave shape - square, sine, etc

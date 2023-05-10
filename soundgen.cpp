@@ -1,6 +1,7 @@
 /** last changed: Ryan Beatty, 5/3/23
- * a simple saw wave proof of concept
- * TODO: create functions for other core wave types (e.g. sine, triangle)
+ * a simple sine wave proof of concept, 
+ * showing how to use aquila and rtaudio together. 
+ * 
  *
  */
 
@@ -21,14 +22,29 @@ int saw( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
     for ( j=0; j<2; j++ ) {
       *buffer++ = lastValues[j];
       lastValues[j] += 0.005 * (j+1+(j*0.1));
-      printf("%f ",lastValues[j]);
       if ( lastValues[j] >= 1.0 ) lastValues[j] -= 2.0;
     }
-    printf("\n");
   }
-  printf("buffer filled\n");
   return 0;
 }
+
+int sine(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
+         double streamTime, RtAudioStreamStatus status, void *userData )
+{
+    double *buffer = (double *) outputBuffer;
+    Aquila::SineGenerator *sinegen = (Aquila::SineGenerator *) userData;
+
+    if ( status ) 
+        std::cout << "Stream underflow detected!" << std::endl;
+ 
+    // write non-interleaved audio data using aquila
+    sinegen->generate(nBufferFrames);  
+    for (unsigned int i = 0; i <= nBufferFrames; i++){
+        *buffer++ = sinegen->sample(i);
+    }
+    return 0;
+}
+
 
 int main(void){
 
@@ -40,14 +56,17 @@ int main(void){
   }
   RtAudio::StreamParameters parameters;
   parameters.deviceId = dac.getDefaultOutputDevice();
-  parameters.nChannels = 2;
+  parameters.nChannels = 1;
   parameters.firstChannel = 0;
   unsigned int sampleRate = 44100;
   unsigned int bufferFrames = 256; // 256 sample frames
+  Aquila::SineGenerator sinegen(sampleRate);
+  sinegen.setFrequency(440).setAmplitude(1); // amplitude set to 1 bc
+                                             // rtaudio samples are -1..1
   double data[2] = {0, 0};
   try {
     dac.openStream( &parameters, NULL, RTAUDIO_FLOAT64,
-                    sampleRate, &bufferFrames, &saw, (void *)&data );
+                    sampleRate, &bufferFrames, &sine, &sinegen);
     dac.startStream();
   }
   catch ( RtAudioError& e ) {
