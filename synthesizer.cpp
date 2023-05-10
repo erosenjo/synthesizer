@@ -3,9 +3,13 @@
 #include "samplegenerator.hpp"
 #include "tui.hpp"
 
+// Sine wave generator function for use with RtAudio.
 int sine(void *output_buffer, void *input_buffer, unsigned int n_frames,
          double stream_time, RtAudioStreamStatus status, void *user_data)
 {
+    // Input buffer is unused here
+    (void)input_buffer;
+
     double *buffer = (double *)output_buffer;
     SampleGenerator *sg = (SampleGenerator *)user_data;
 
@@ -42,13 +46,12 @@ int main()
     try
     {
         dac.openStream(
-                &params, NULL, RTAUDIO_FLOAT64, 
-                sample_rate, &buffer_frames, &sine, 
-                (void *)tui.sg
-                );
+            &params, NULL, RTAUDIO_FLOAT64,
+            sample_rate, &buffer_frames, &sine,
+            (void *)tui.sg);
         dac.startStream();
     }
-    catch (RtAudioError e)
+    catch (RtAudioError &e)
     {
         e.printMessage();
         return 1;
