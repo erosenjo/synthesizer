@@ -101,7 +101,7 @@ int TUI::update()
     switch (getch())
     {
     case 'q':
-        return 0;
+        return 1;
     case KEY_UP:
         strcpy(display, "amp++  ");
         if (amplitude <= 255 - AMP_STEP)
