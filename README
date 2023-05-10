@@ -8,3 +8,4 @@ TODO for gui:
 	button for play/pause
 	preset buttons for wave shape - square, sine, etc
 	samples -> rtaudio!
+    integrate rtaudio into tui
