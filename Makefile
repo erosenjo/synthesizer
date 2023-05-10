@@ -8,7 +8,7 @@ generatorpath = $(aquilapath)/source/generator
 all: $(targets)
 
 clean:
-	rm -rf $(targets) *.dSYM/
+	rm -rf $(targets) synth *.dSYM/
 
 alsa: tui.o samplegenerator.o sine.o square.o triangle.o generator.o $(rtaudio)
 	g++ $(cflags) -o synth $^ -D'__LINUX_ALSA__' -I/usr/include/rtaudio -lasound -lpthread -lncurses
