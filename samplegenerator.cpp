@@ -1,6 +1,12 @@
-#include "aquila-src/aquila/aquila.h"
+#include <cmath>
 
+#include "aquila-src/aquila/aquila.h"
 #include "samplegenerator.hpp"
+
+int SampleGenerator::toFrequency(int semitones)
+{
+    return round(440 * pow(2, semitones / (double)12));
+}
 
 int SampleGenerator::getAmplitude()
 {
