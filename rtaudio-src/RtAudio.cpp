@@ -616,7 +616,7 @@ unsigned int RtApiCore :: getDefaultInputDevice( void )
   }
 
   dataSize *= nDevices;
-  AudioDeviceID deviceList[ nDevices ];
+  AudioDeviceID *deviceList = new AudioDeviceID[ nDevices ];
   property.mSelector = kAudioHardwarePropertyDevices;
   result = AudioObjectGetPropertyData( kAudioObjectSystemObject, &property, 0, NULL, &dataSize, (void *) &deviceList );
   if ( result != noErr ) {
@@ -649,7 +649,7 @@ unsigned int RtApiCore :: getDefaultOutputDevice( void )
   }
 
   dataSize = sizeof( AudioDeviceID ) * nDevices;
-  AudioDeviceID deviceList[ nDevices ];
+  AudioDeviceID *deviceList = new AudioDeviceID[ nDevices ];
   property.mSelector = kAudioHardwarePropertyDevices;
   result = AudioObjectGetPropertyData( kAudioObjectSystemObject, &property, 0, NULL, &dataSize, (void *) &deviceList );
   if ( result != noErr ) {
@@ -685,7 +685,7 @@ RtAudio::DeviceInfo RtApiCore :: getDeviceInfo( unsigned int device )
     return info;
   }
 
-  AudioDeviceID deviceList[ nDevices ];
+  AudioDeviceID *deviceList = new AudioDeviceID[ nDevices ];
   UInt32 dataSize = sizeof( AudioDeviceID ) * nDevices;
   AudioObjectPropertyAddress property = { kAudioHardwarePropertyDevices,
                                           kAudioObjectPropertyScopeGlobal,
@@ -837,7 +837,7 @@ RtAudio::DeviceInfo RtApiCore :: getDeviceInfo( unsigned int device )
   }
 
   UInt32 nRanges = dataSize / sizeof( AudioValueRange );
-  AudioValueRange rangeList[ nRanges ];
+  AudioValueRange *rangeList = new AudioValueRange[ nRanges ];
   result = AudioObjectGetPropertyData( id, &property, 0, NULL, &dataSize, &rangeList );
   if ( result != kAudioHardwareNoError ) {
     errorStream_ << "RtApiCore::getDeviceInfo: system error (" << getErrorCode( result ) << ") getting sample rates.";
@@ -975,7 +975,7 @@ bool RtApiCore :: probeDeviceOpen( unsigned int device, StreamMode mode, unsigne
     return FAILURE;
   }
 
-  AudioDeviceID deviceList[ nDevices ];
+  AudioDeviceID *deviceList = new AudioDeviceID[ nDevices ];
   UInt32 dataSize = sizeof( AudioDeviceID ) * nDevices;
   AudioObjectPropertyAddress property = { kAudioHardwarePropertyDevices,
                                           kAudioObjectPropertyScopeGlobal,
@@ -990,9 +990,9 @@ bool RtApiCore :: probeDeviceOpen( unsigned int device, StreamMode mode, unsigne
   AudioDeviceID id = deviceList[ device ];
 
   // Setup for stream mode.
-  bool isInput = false;
+  // bool isInput = false;
   if ( mode == INPUT ) {
-    isInput = true;
+    // isInput = true;
     property.mScope = kAudioDevicePropertyScopeInput;
   }
   else
