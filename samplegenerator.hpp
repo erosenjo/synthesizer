@@ -11,6 +11,7 @@ public:
     // Get 1 second of samples at 44100 Hz
     static const int N_SAMPLES = 44100;
 
+    static int toFrequency(int);
     int getAmplitude();
     int getFrequency();
 
