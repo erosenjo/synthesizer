@@ -1,5 +1,5 @@
 cflags = -g -pedantic -Wall -Wextra -std=c++11
-targets = alsa mac synth.o tui.o samplegenerator.o sine.o square.o triangle.o generator.o
+targets = alsa mac tui.o samplegenerator.o sine.o square.o triangle.o generator.o
 
 aquilapath = aquila-src/aquila
 rtaudio = rtaudio-src/RtAudio.cpp
