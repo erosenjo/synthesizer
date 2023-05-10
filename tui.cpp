@@ -82,6 +82,7 @@ void TUI::drawWave()
             displayString(scaled_sample + (WINDOW_HEIGHT / 2), (s / DISPLAY_STEP), (char *)"*");
         }
     }
+    free(samples);
 }
 
 void TUI::init()
@@ -131,8 +132,9 @@ void TUI::init()
     exit( 0 );
   }
 //end copied segment
-
-    while (1)
+    
+    int running = 1;
+    while (running)
     {
         int amplitude = sg->amplitude;
         int semitones = sg->semitones;
@@ -166,6 +168,8 @@ void TUI::init()
             if (semitones >= 0)
                 semitones--;
             break;
+        case 'q':
+            running = 0;
         case 'a':
             strcpy(display, "C      ");
             semitones = -9;
@@ -256,6 +260,10 @@ void TUI::init()
     }
     if ( dac.isStreamOpen() ) dac.closeStream();
     //end copied segment
+    
+
+    //TODO- memory management
+    free(sg);
 
 }
 
