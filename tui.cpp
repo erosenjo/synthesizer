@@ -54,7 +54,7 @@ void TUI::drawWave()
 
     // Get samples
     double samples[WINDOW_WIDTH];
-    sg.getSamples(samples, WINDOW_WIDTH, 0);
+    sg->getSamples(samples, WINDOW_WIDTH, 0);
 
     for (int s = 0; s < WINDOW_WIDTH; s++)
     {
@@ -67,9 +67,8 @@ void TUI::drawWave()
 void TUI::init()
 {
     // Set initial amplitude and frequency
-    int init_amplitude = 255;
-    int init_frequency = 440;
-    sg.set(init_amplitude, init_frequency);
+    sg->amplitude = 255;
+    sg->semitones = 0;
 
     // Initialize ncurses
     initscr();            // Initialize ncurses screen
@@ -85,48 +84,47 @@ void TUI::init()
 void TUI::update()
 {
     // Get realtime keyboard input
-    int amp_step = 15;
 
-    int amplitude = sg.amplitude;
-    int frequency = sg.frequency;
+    int amplitude = sg->amplitude;
+    int semitones = sg->semitones;
 
     drawWave();
 
     // Print amplitude and frequency
     char display[20];
     mvprintw(WINDOW_HEIGHT + 4 + WINDOW_Y_OFFSET, WINDOW_X_OFFSET, "%6.2f %%", amplitude * 100 / (double)255);
-    mvprintw(WINDOW_HEIGHT + 5 + WINDOW_Y_OFFSET, WINDOW_X_OFFSET, "%6d Hz", frequency);
+    mvprintw(WINDOW_HEIGHT + 5 + WINDOW_Y_OFFSET, WINDOW_X_OFFSET, "%6d Hz", sg->toHz());
 
     switch (getch())
     {
     case KEY_UP:
         strcpy(display, "amp++  ");
-        if (amplitude <= 255 - amp_step)
-            sg.set(amplitude + amp_step, frequency);
+        if (amplitude <= 255 - AMP_STEP)
+            sg->amplitude += AMP_STEP;
         return;
     case KEY_DOWN:
         strcpy(display, "amp--  ");
-        if (amplitude >= amp_step)
-            sg.set(amplitude - amp_step, frequency);
+        if (amplitude >= AMP_STEP)
+            sg->amplitude -= AMP_STEP;
         return;
     case KEY_RIGHT:
         strcpy(display, "freq++ ");
-        if (frequency < SampleGenerator::toFrequency(24))
+        if (semitones < 24)
             semitones++;
         break;
     case KEY_LEFT:
         strcpy(display, "freq-- ");
-        if (frequency > SampleGenerator::toFrequency(-24))
+        if (semitones > -24)
             semitones--;
         break;
     case 'x':
         strcpy(display, "oct++  ");
-        if (frequency <= SampleGenerator::toFrequency(12))
+        if (semitones <= 12)
             semitones += 12;
         break;
     case 'z':
         strcpy(display, "oct--  ");
-        if (frequency >= SampleGenerator::toFrequency(-12))
+        if (semitones >= -12)
             semitones -= 12;
         break;
     case 'a':
@@ -203,6 +201,6 @@ void TUI::update()
         break;
     }
 
-    sg.set(amplitude, SampleGenerator::toFrequency(semitones));
+    sg->semitones = semitones;
     displayString(WINDOW_HEIGHT + 2, 0, (char *)display);
 }
