@@ -1,12 +1,12 @@
 cflags = -g -pedantic -Wall -Wextra -std=c++11
-targets = alsa mac synthesizer.o samplegenerator.o tui.o
+targets = synthesizer.o samplegenerator.o tui.o
 
 rtaudio = rtaudio-src/RtAudio.cpp
 
 all: $(targets)
 
 clean:
-	rm -rf $(targets) synth *.dSYM/
+	rm -rf $(targets) synth 
 
 alsa: synthesizer.o samplegenerator.o tui.o $(rtaudio)
 	g++ $(cflags) -o synth $^ -D'__LINUX_ALSA__' -I/usr/include/rtaudio -lasound -lpthread -lncurses
